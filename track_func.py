@@ -370,7 +370,12 @@ def vid(source='vid.mp4', h=1024, w=960):
 
     return (density, flow, crowd, err)
 
-
+def density(img_url, grid_w, grid_h):
+    return [
+        [0,0,10],
+        [0,1,100],
+        [1,1,20]
+    ]
 
 
 #
