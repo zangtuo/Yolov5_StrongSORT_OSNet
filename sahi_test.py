@@ -22,10 +22,9 @@ detection_model = AutoDetectionModel.from_pretrained(
     device="cpu", # or 'cuda:0'
 )
 
-# model = DetectMultiBackend(yolov5_model_path, device='cpu', dnn=False, data=None, fp16=False)
-result = get_prediction("demo_data/small-vehicles1.jpeg", detection_model)
+model = DetectMultiBackend(yolov5_model_path, device='cpu', dnn=False, data=None, fp16=False)
+result = get_prediction("demo_data/small-vehicles1.jpeg", model)
 
 result.export_visuals(export_dir="demo_data/")
-
 Image("demo_data/prediction_visual.png")
 
