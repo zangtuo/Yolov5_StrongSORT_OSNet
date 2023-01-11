@@ -38,6 +38,7 @@ from yolov5.utils.plots import Annotator, colors, save_one_box
 from utils.segment.general import masks2segments, process_mask, process_mask_native
 from trackers.multi_tracker_zoo import create_tracker
 
+
 # class YoloTracker:
 #     def __int__(self, yolo_weights):
 #         self.device = select_device('')
