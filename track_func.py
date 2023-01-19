@@ -268,11 +268,12 @@ def track_vid_drone_vehicle(source='media/iiilab_video.mp4', h=1024, w=960):
     # TODO: 处理track结果
     # 1. 绘制轨迹（基于类型+id：人或车辆）
     draw(result, source)
-
     # 2. 计算每个车辆的帧移动速度 v = trajactory / frames
     frames_speed = speed(result)
     # 3. 计算网格区域车辆 num / grid
+    grid_car(result)
     # 4. 计算区域密度变化趋势:
+
     #   a. 依据网格平均移动速度*时间 移动该网格内所有车辆至其他网格
     #   b. 重新计算网格车辆密度：如出现车辆聚集，则生成异常判决
 
@@ -341,9 +342,10 @@ def draw(result, source):
 def speed(result):
     """
     求result中所有类别的帧速度，但是暴力遍历
+    return speeds:list
     """
     position = []
-    speeds = []
+    speeds = []  # 速度向量
     id_list = []
     for frame, outputs in enumerate(result, 1):
         for output in outputs:
@@ -375,6 +377,77 @@ def speed(result):
     return speeds
 
 
+def grid_car(result=[503, 140], source='media/iiilab_video.mp4', grid_shape=[4, 3], color=(0, 255, 0)):
+    """
+    将视频分为grid_shape，求每个网格中的车辆数目，播放视频
+    """
+    list_x = [0]
+    list_y = [0]
+
+    video = cv2.VideoCapture(source)
+    fps = video.get(cv2.CAP_PROP_FPS)
+    ret, frame = video.read()
+
+    h, w, _ = frame.shape
+    rows, cols = grid_shape
+    dy, dx = h / rows, w / cols
+
+    for x in np.linspace(start=dx, stop=w - dx, num=cols - 1):
+        x = int(round(x))
+        cv2.line(frame, (x, 0), (x, h), color=color, thickness=2)
+        list_x.append(x)
+    list_x.append(w)
+    # draw horizontal lines
+    for y in np.linspace(start=dy, stop=h - dy, num=rows - 1):
+        y = int(round(y))
+        cv2.line(frame, (0, y), (w, y), color=color, thickness=2)
+        list_y.append(y)
+    list_y.append(h)
+
+    nums = 0
+    while True:  # 视频播放
+        car_number = np.zeros((rows, cols))  # 维度跟网格中的对应
+
+        ret, frame = video.read()
+        if not ret:
+            break
+
+        # 画网格
+        for x in list_x:
+            cv2.line(frame, (x, 0), (x, h), color=color, thickness=3)
+        for y in list_y:
+            cv2.line(frame, (0, y), (w, y), color=color, thickness=3)
+
+        for output in result[nums]:  # 一帧中的所有目标
+            bbox = output[0:4]
+            center_x = (bbox[0] + bbox[2]) / 2
+            center_y = (bbox[1] + bbox[3]) / 2
+            #  车辆计数
+            for num_x, x in enumerate(list_x, 0):
+                if center_x >= x:
+                    continue
+                else:
+                    for num_y, y in enumerate(list_y, 0):
+                        if center_y >= y:
+                            continue
+                        else:
+                            car_number[num_y - 1][num_x - 1] = car_number[num_y - 1][num_x - 1] + 1
+                            break
+                    break
+
+        #  画数字
+        for i in range(0, len(list_x) - 1):
+            for j in range(1, len(list_y)):
+                cv2.putText(frame, str(car_number[j - 1][i]), (list_x[i], list_y[j]), cv2.FONT_HERSHEY_COMPLEX, 1.0,
+                            (100, 200, 200), 2)
+
+        nums = nums + 1
+        cv2.imshow(source, frame)  # 显示
+        cv2.waitKey(int(300 / fps))
+    cv2.destroyAllWindows()
+    return car_number
+
+
 #
 #
 # def main(opt):
@@ -384,3 +457,4 @@ def speed(result):
 #
 if __name__ == "__main__":
     track_vid_drone_vehicle()
+    # grid_car()
