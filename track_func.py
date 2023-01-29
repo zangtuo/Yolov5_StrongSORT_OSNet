@@ -267,7 +267,7 @@ def track_vid_drone_vehicle(source='media/iiilab_video.mp4', h=1024, w=960):
     # （最后一帧 - 第一次检测到目标帧 ） / 帧数差 = 速度向量
     # TODO: 处理track结果
     # 1. 绘制轨迹（基于类型+id：人或车辆）
-    # draw(result, source)
+    draw(result, source)
     # 2. 计算每个车辆的帧移动速度 v = trajactory / frames
     frames_speed = speed(result)
     # 3. 计算网格区域车辆 num / grid
