@@ -267,7 +267,7 @@ def track_vid_drone_vehicle(source='media/iiilab_video.mp4', h=1024, w=960):
     # （最后一帧 - 第一次检测到目标帧 ） / 帧数差 = 速度向量
     # TODO: 处理track结果
     # 1. 绘制轨迹（基于类型+id：人或车辆）
-    draw(result, source)
+    # draw(result, source)
     # 2. 计算每个车辆的帧移动速度 v = trajactory / frames
     frames_speed = speed(result)
     # 3. 计算网格区域车辆 num / grid
@@ -377,7 +377,7 @@ def speed(result):
     return speeds
 
 
-def grid_car(result=[503, 140], source='media/iiilab_video.mp4', grid_shape=[4, 3], color=(0, 255, 0)):
+def grid_car(result, source='media/iiilab_video.mp4', grid_shape=[5, 5], color=(0, 255, 0)):
     """
     将视频分为grid_shape，求每个网格中的车辆数目，播放视频
     """
@@ -397,7 +397,7 @@ def grid_car(result=[503, 140], source='media/iiilab_video.mp4', grid_shape=[4, 
         cv2.line(frame, (x, 0), (x, h), color=color, thickness=2)
         list_x.append(x)
     list_x.append(w)
-    # draw horizontal lines
+    # 网格参数
     for y in np.linspace(start=dy, stop=h - dy, num=rows - 1):
         y = int(round(y))
         cv2.line(frame, (0, y), (w, y), color=color, thickness=2)
@@ -419,21 +419,22 @@ def grid_car(result=[503, 140], source='media/iiilab_video.mp4', grid_shape=[4, 
             cv2.line(frame, (0, y), (w, y), color=color, thickness=3)
 
         for output in result[nums]:  # 一帧中的所有目标
-            bbox = output[0:4]
-            center_x = (bbox[0] + bbox[2]) / 2
-            center_y = (bbox[1] + bbox[3]) / 2
-            #  车辆计数
-            for num_x, x in enumerate(list_x, 0):
-                if center_x >= x:
-                    continue
-                else:
-                    for num_y, y in enumerate(list_y, 0):
-                        if center_y >= y:
-                            continue
-                        else:
-                            car_number[num_y - 1][num_x - 1] = car_number[num_y - 1][num_x - 1] + 1
-                            break
-                    break
+            if int(output[5]) == 4:
+                bbox = output[0:4]
+                center_x = (bbox[0] + bbox[2]) / 2
+                center_y = (bbox[1] + bbox[3]) / 2
+                #  车辆计数
+                for num_x, x in enumerate(list_x, 0):
+                    if center_x >= x:
+                        continue
+                    else:
+                        for num_y, y in enumerate(list_y, 0):
+                            if center_y >= y:
+                                continue
+                            else:
+                                car_number[num_y - 1][num_x - 1] = car_number[num_y - 1][num_x - 1] + 1
+                                break
+                        break
 
         #  画数字
         for i in range(0, len(list_x) - 1):
@@ -445,7 +446,8 @@ def grid_car(result=[503, 140], source='media/iiilab_video.mp4', grid_shape=[4, 
         cv2.imshow(source, frame)  # 显示
         cv2.waitKey(int(300 / fps))
     cv2.destroyAllWindows()
-    return car_number
+
+    # return car_number  # 叠加后返回网格车辆数
 
 
 #

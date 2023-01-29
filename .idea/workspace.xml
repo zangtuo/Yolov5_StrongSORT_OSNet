@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1704a09c-7d44-4967-a3da-5fff5efb3b09" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.idea/Yolov5_StrongSORT_OSNet_fork.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Yolov5_StrongSORT_OSNet_fork.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/track_func.py" beforeDir="false" afterPath="$PROJECT_DIR$/track_func.py" afterDir="false" />
     </list>
@@ -36,11 +37,12 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Github/Yolov5_StrongSORT_OSNet/media&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Github/Yolov5_StrongSORT_OSNet&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -52,6 +54,28 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.track_func">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="Yolov5_StrongSORT_OSNet_fork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="data_assimilation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Yolov5_StrongSORT_OSNet_fork" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -213,6 +237,12 @@
       <workItem from="1672996026907" duration="526000" />
       <workItem from="1672996560888" duration="13666000" />
       <workItem from="1673270025306" duration="64167000" />
+      <workItem from="1674261063870" duration="2646000" />
+      <workItem from="1674634086382" duration="64000" />
+      <workItem from="1674634158859" duration="144000" />
+      <workItem from="1674634311681" duration="927000" />
+      <workItem from="1674984842782" duration="256000" />
+      <workItem from="1674985108780" duration="1560000" />
     </task>
     <servers />
   </component>
@@ -255,12 +285,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/track_func.py</url>
-          <line>440</line>
+          <line>441</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/track_func.py</url>
-          <line>438</line>
+          <line>439</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
@@ -288,6 +318,6 @@
     <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$web_server.coverage" NAME="web_server Coverage Results" MODIFIED="1673060814390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$data_assimilation.coverage" NAME="data_assimilation Coverage Results" MODIFIED="1673072731729" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$track_rtmp.coverage" NAME="track_rtmp Coverage Results" MODIFIED="1673010791607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet$track_func.coverage" NAME="track_func 覆盖结果" MODIFIED="1674094187094" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet$track_func.coverage" NAME="track_func 覆盖结果" MODIFIED="1674986073788" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
