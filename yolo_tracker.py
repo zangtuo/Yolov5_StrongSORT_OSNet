@@ -111,9 +111,59 @@ class YoloTracker:
     '''single image detection'''
     @torch.no_grad()
     def track_img(self, source):
-        pass
+        stride, names, pt = self.detection_model.stride, self.detection_model.names, self.detection_model.pt
+        dataset = LoadImages(source, img_size=self.imgsz, stride=stride, auto=pt)
+        outputs = [None]
+        seen, windows, dt = 0, [], (Profile(), Profile(), Profile(), Profile())
 
-    '''无人机车辆追踪'''
+        result = []
+        w, h = [0, 0]
+        n_frame = 0
+        for frame_idx, (path, im, im0s, vid_cap, s) in enumerate(dataset):
+            w = im0s.shape[1]
+            h = im0s.shape[0]
+            n_frame += 1
+            # read image
+
+            with dt[0]:
+                im = torch.from_numpy(im).to(self.device)
+                im = im.half() if False else im.float()  # uint8 to fp16/32
+                im /= 255.0  # 0 - 255 to 0.0 - 1.0
+                if len(im.shape) == 3:
+                    im = im[None]  # expand for batch dim
+
+                # TODO sliced prediction
+                #     im = im0s
+
+            # Inference
+            with dt[1]:
+                if self.slice_enabled:
+                    # TODO: SAHI
+                    pred = []
+                else:
+                    pred = self.detection_model(im, augment=False, visualize=False)
+
+            # Apply NMS
+            with dt[2]:
+                pred = non_max_suppression(pred, conf_thres=0.25, iou_thres=0.45, classes=None, agnostic=False,
+                                           max_det=1000)
+                # Process detections
+                for i, det in enumerate(pred):  # detections per image
+                    im0 = im0s.copy()
+
+                    if det is not None and len(det):
+                        det[:, :4] = scale_boxes(im.shape[2:], det[:, :4],
+                                                 im0.shape).round()  # rescale boxes to im0 size
+
+                        # pass detections to strongsort
+                        with dt[3]:
+                            outputs[i] = tracker.update(det.cpu(), im)
+
+                result.append(outputs)
+
+        return w, h, result
+
+    '''视频追踪分析'''
     @torch.no_grad()
     def track_vid(self, source):
         stride, names, pt = self.detection_model.stride, self.detection_model.names, self.detection_model.pt
@@ -126,7 +176,13 @@ class YoloTracker:
         curr_frames, prev_frames = [None], [None]
         outputs = [None]
 
+        w, h = [0, 0]
+        n_frame = 0
         for frame_idx, (path, im, im0s, vid_cap, s) in enumerate(dataset):
+
+            w = im0s.shape[1]
+            h = im0s.shape[0]
+            n_frame += 1
 
             # read image
             with dt[0]:
@@ -136,7 +192,7 @@ class YoloTracker:
                 if len(im.shape) == 3:
                     im = im[None]  # expand for batch dim
 
-                # if self.slice_enabled:
+                #TODO sliced prediction
                 #     im = im0s
 
             # Inference
@@ -174,24 +230,60 @@ class YoloTracker:
             track_result.append(outputs)
 
 
-        return track_result
+        return (w,h,n_frame,track_result)
 
 class YoloTrackerAnalyzer:
     def __init__(self):
         pass
 
-    def calc_density(self, w, h, result, grid_w, grid_h):
+    def calc_density(self, w, h, classes, grid_w, grid_h, result):
         density = np.zeros([grid_w, grid_h])
         for r in result:
             centroid = [(r[0] + r[2])/2, (r[1] + r[3])/2]
             [x,y] = centroid
-            idx_x = int(np.floor(x/grid_w))
-            idx_y = int(np.floor(y/grid_h))
+            idx_x = int(np.floor(x/w*grid_w))
+            idx_y = int(np.floor(y/h*grid_h))
             density[idx_x, idx_y] += 1
 
         return density
 
-    def esti_trend(self, w, h, detection):
+    '''calculate speed of each object based on the last n frames'''
+    def calc_speed(self, result, classes, n_frame):
+        res = result[-n_frame:]
+        position = []
+        speeds = []
+        id_list = []
+        for frame, outputs in enumerate(res, 1):
+            for output in outputs:
+                bbox = output[0:4]
+                id = int(output[4])
+                cls = int(output[5])
+                if id not in id_list:
+                    id_list.append(id)
+                    start_frame = frame
+                    start_pos_x = (bbox[0] + bbox[2]) / 2
+                    start_pos_y = (bbox[1] + bbox[3]) / 2
+                    # [id, cls, start_frame, end_frame, start_pos_x, start_pos_y, end_pos_x, end_pos_y]
+                    position.append(
+                        [id, cls, start_frame, start_frame, start_pos_x, start_pos_y, start_pos_x, start_pos_y])
+                else:
+                    position[id_list.index(id)][3] = frame
+                    position[id_list.index(id)][6] = (bbox[0] + bbox[2]) / 2
+                    position[id_list.index(id)][7] = (bbox[1] + bbox[3]) / 2
+
+        for num in range(len(position)):  # 速度向量
+            frame_d = position[num][3] - position[num][2]
+            if frame_d == 0:
+                speeds.append([position[num][0], position[num][1], 0, 0])
+            else:
+                id_speedx = (position[num][6] - position[num][4]) / frame_d
+                id_speedy = (position[num][7] - position[num][5]) / frame_d
+                # [id, type, x, y]
+                speeds.append([position[num][0], position[num][1], id_speedx, id_speedy])
+
+        return speeds
+
+    def esti_trend(self, detection):
         x1 = 0
         y1 = 0
         x2 = 0
@@ -202,9 +294,10 @@ class YoloTrackerAnalyzer:
         return trends
 
 
-    def esti_agglo(self, w, h, result):
+    '''人群异常聚集检测'''
+    def esti_agglo(self, w, h, grid_w, grid_h, results):
         threshold = 20
-        density = np.array(self.calc_density(w, h, result, 16, 16))
+        density = np.array(self.calc_density(w, h, results, grid_w, grid_h))
 
         # compute mean, std, and media of density
         mu_d = np.average(density)
@@ -213,21 +306,22 @@ class YoloTrackerAnalyzer:
 
         # TODO if a grid's density is above the threshold && higher than 3*std_d+median_d, consider it as agglomerated
 
-    def esti_flee(self, w, h, results):
+    '''人群异常逃离检测'''
+    def esti_flee(self, w, h, grid_w, grid_h, results):
         density = []
         for result in results:
-            dense = np.array(self.calc_density(w, h, result, 16, 16))
+            dense = np.array(self.calc_density(w, h, result, grid_w, grid_h))
             density.append(dense)
 
         density = np.array(density)
 
         #TODO calculate
 
-    def esti_conflict(self, w, h, result):
+    '''人群冲突检测'''
+    def esti_conflict(self, w, h, grid_w, grid_h, results):
         pass
 
-
-
+'''结果可视化，结果保存'''
 class YoloTrackerVisualizer:
     def draw_track(self, w, h, tracks):
         # tracks smoothing
@@ -241,12 +335,20 @@ class YoloTrackerVisualizer:
 
 
 if __name__ == '__main__':
-    tracker = YoloTracker(yolo_weights='.\\visdrone.pt')
+    # hyper-parameters
+    grid_w = 16
+    grid_h = 16
+    model_dir = '.'
+    model_name = 'visdrone'
+    classes = [3,4,5,6,7,8,9]
+
+    analyzer = YoloTrackerAnalyzer()
+    tracker = YoloTracker(yolo_weights=os.path.join(model_dir, model_name)+'.pt')
 
     w, h, n_frame, outputs = tracker.track_vid('media\\vid3.mp4')
 
-    '''density calculation'''
-    density = YoloTrackerAnalyzer.calc_density(w, h, outputs[-1,:,:], 10, 10)
+    # '''density calculation'''
+    density = analyzer.calc_density(w, h, grid_w, grid_h, classes, outputs[20][0])
 
     '''track draw based on the last frame of video'''
     # tracks = YoloTrackerAnalyzer.calc_last_track(w, h, outputs, frame_recur)
