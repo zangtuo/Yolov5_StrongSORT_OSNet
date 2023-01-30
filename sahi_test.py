@@ -26,7 +26,7 @@ detection_model = AutoDetectionModel.from_pretrained(
     model_type='yolov5',
     model_path=yolov5_model_path,
     confidence_threshold=0.3,
-    device="cpu", # or 'cuda:0'
+    device="cuda:0", # or 'cuda:0'
 )
 
 result = get_prediction("media/test_drone.png", detection_model)

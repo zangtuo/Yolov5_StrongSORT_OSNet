@@ -31,8 +31,6 @@ from yolov5.utils.dataloaders import VID_FORMATS, LoadImages, LoadStreams
 from yolov5.utils.general import (LOGGER, Profile, check_img_size, non_max_suppression, scale_boxes, check_requirements, cv2,
                                   check_imshow, xyxy2xywh, increment_path, strip_optimizer, colorstr, print_args, check_file)
 from yolov5.utils.torch_utils import select_device, time_sync
-# from yolov5.utils.plots import Annotator, colors, save_one_box
-# from utils.segment.general import masks2segments, process_mask, process_mask_native
 from trackers.multi_tracker_zoo import create_tracker
 
 '''constants'''
@@ -112,7 +110,7 @@ class YoloTracker:
 
     '''single image detection'''
     @torch.no_grad()
-    def detect_img(self, source):
+    def track_img(self, source):
         pass
 
     '''无人机车辆追踪'''
@@ -182,13 +180,10 @@ class YoloTrackerAnalyzer:
     def __init__(self):
         pass
 
-    @staticmethod
-    def calc_density(w, h, detection, step_x, step_y):
-        grid_w = w / step_x
-        grid_h = h / step_y
-        density = np.zeros([step_x, step_y])
-        for d in detection:
-            centroid = [(d[0] + d[2])/2, (d[1] + d[3])/2, ]
+    def calc_density(self, w, h, result, grid_w, grid_h):
+        density = np.zeros([grid_w, grid_h])
+        for r in result:
+            centroid = [(r[0] + r[2])/2, (r[1] + r[3])/2]
             [x,y] = centroid
             idx_x = int(np.floor(x/grid_w))
             idx_y = int(np.floor(y/grid_h))
@@ -196,16 +191,71 @@ class YoloTrackerAnalyzer:
 
         return density
 
+    def esti_trend(self, w, h, detection):
+        x1 = 0
+        y1 = 0
+        x2 = 0
+        y2 = 0
+        val = 0
+        trend = [x1, y1, x2, y2, val]
+        trends = [trend]
+        return trends
+
+
+    def esti_agglo(self, w, h, result):
+        threshold = 20
+        density = np.array(self.calc_density(w, h, result, 16, 16))
+
+        # compute mean, std, and media of density
+        mu_d = np.average(density)
+        std_d = np.std(density)
+        median_d = np.median(density)
+
+        # TODO if a grid's density is above the threshold && higher than 3*std_d+median_d, consider it as agglomerated
+
+    def esti_flee(self, w, h, results):
+        density = []
+        for result in results:
+            dense = np.array(self.calc_density(w, h, result, 16, 16))
+            density.append(dense)
+
+        density = np.array(density)
+
+        #TODO calculate
+
+    def esti_conflict(self, w, h, result):
+        pass
+
+
+
+class YoloTrackerVisualizer:
+    def draw_track(self, w, h, tracks):
+        # tracks smoothing
+        pass
+
+    def draw_boundbox(self, w, h, result):
+        pass
+
+    def draw_vid(self, w, h, video, result, file_save, draw_bb=True, draw_track=False, track_frame=10):
+        pass
 
 
 if __name__ == '__main__':
-    # YoloTrackerAnalyzer.calc_density(100, 100, [[0.1, 0.1, 2.0, 2.0]], 10, 10)
-    # a = np.zeros((2,2))
-    #
-    # for m in range(2):
-    #     for n in range(2):
-    #         a[m,n] = m*2+n
-    #
-    # print(a[0,1])
-    tracker = YoloTracker(yolo_weights='visdrone.pt')
-    tracker.track_vid('media\\vid3.mp4')
+    tracker = YoloTracker(yolo_weights='.\\visdrone.pt')
+
+    w, h, n_frame, outputs = tracker.track_vid('media\\vid3.mp4')
+
+    '''density calculation'''
+    density = YoloTrackerAnalyzer.calc_density(w, h, outputs[-1,:,:], 10, 10)
+
+    '''track draw based on the last frame of video'''
+    # tracks = YoloTrackerAnalyzer.calc_last_track(w, h, outputs, frame_recur)
+    # track_img = YoloTrackerAnalyzer.draw_last_track(w, h, outputs)
+
+    # true_north = 100
+    # YoloTrackerAnalyzer.calc_trend(w, h, outputs, true_north)
+
+    # w, h, outputs = tracker.track_img('media\\img1.jpeg')
+    # density = YoloTrackerAnalyzer.calc_density(w, h, outputs, 10, 10)
+
+
