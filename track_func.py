@@ -267,13 +267,13 @@ def track_vid_drone_vehicle(source='media/iiilab_video.mp4', h=1024, w=960):
     # （最后一帧 - 第一次检测到目标帧 ） / 帧数差 = 速度向量
     # TODO: 处理track结果
     # 1. 绘制轨迹（基于类型+id：人或车辆）
-    draw(result, source)
+    # draw(result, source)
     # 2. 计算每个车辆的帧移动速度 v = trajactory / frames
-    frames_speed = speed(result)
+    # frames_speed = speed(result)
     # 3. 计算网格区域车辆 num / grid
-    grid_car(result)
+    # grid_car_play(result)
     # 4. 计算区域密度变化趋势:
-
+    predict(result)
     #   a. 依据网格平均移动速度*时间 移动该网格内所有车辆至其他网格
     #   b. 重新计算网格车辆密度：如出现车辆聚集，则生成异常判决
 
@@ -286,12 +286,65 @@ def gpr2d(obs1, obs2, target_pos):
     return np.array([[0, 0, 45], [0, 1, 34]])
 
 
-def density(img_url, grid_w, grid_h):
-    return [
-        [0, 0, 10],
-        [0, 1, 100],
-        [1, 1, 20]
-    ]
+def density(img_url, centers, grid_shape=[5, 5], frame_shape=[1, 2, 3]):
+    """
+    计算单帧网格车辆数目
+    return
+    """
+    list_x = [0]
+    list_y = [0]
+    h, w, _ = frame_shape
+    rows, cols = grid_shape
+    dy, dx = h / rows, w / cols
+
+    for x in np.linspace(start=dx, stop=w - dx, num=cols - 1):  # 网格参数
+        x = int(round(x))
+        list_x.append(x)
+    list_x.append(w)
+
+    for y in np.linspace(start=dy, stop=h - dy, num=rows - 1):
+        y = int(round(y))
+        list_y.append(y)
+    list_y.append(h)
+
+    car_number = np.zeros((rows, cols))  # 维度跟网格中的对应
+
+    for num, output in enumerate(img_url):  # 一帧中的所有车辆目标
+        if centers is None:
+            if int(output[5]) == 4:
+                bbox = output[0:4]
+                center_x = (bbox[0] + bbox[2]) / 2
+                center_y = (bbox[1] + bbox[3]) / 2
+                #  车辆计数
+                for num_x, x in enumerate(list_x, 0):
+                    if center_x >= x:
+                        continue
+                    else:
+                        for num_y, y in enumerate(list_y, 0):
+                            if center_y >= y:
+                                continue
+                            else:
+                                car_number[num_y - 1][num_x - 1] = car_number[num_y - 1][num_x - 1] + 1
+                                break
+                        break
+        else:
+            if centers[num][2] == 4:
+                center_x = centers[num][0]
+                center_y = centers[num][1]
+                #  车辆计数
+                for num_x, x in enumerate(list_x, 0):
+                    if center_x >= x:
+                        continue
+                    else:
+                        for num_y, y in enumerate(list_y, 0):
+                            if center_y >= y:
+                                continue
+                            else:
+                                car_number[num_y - 1][num_x - 1] = car_number[num_y - 1][num_x - 1] + 1
+                                break
+                        break
+
+    return car_number
 
 
 def draw(result, source):
@@ -359,7 +412,6 @@ def speed(result):
                 start_pos_y = (bbox[1] + bbox[3]) / 2
                 # [id, cls, start_frame, end_frame, start_pos_x, start_pos_y, end_pos_x, end_pos_y]
                 position.append([id, cls, start_frame, start_frame, start_pos_x, start_pos_y, start_pos_x, start_pos_y])
-            else:
                 position[id_list.index(id)][3] = frame
                 position[id_list.index(id)][6] = (bbox[0] + bbox[2]) / 2
                 position[id_list.index(id)][7] = (bbox[1] + bbox[3]) / 2
@@ -377,7 +429,7 @@ def speed(result):
     return speeds
 
 
-def grid_car(result, source='media/iiilab_video.mp4', grid_shape=[5, 5], color=(0, 255, 0)):
+def grid_car_play(result, source='media/iiilab_video.mp4', grid_shape=[5, 5], color=(0, 255, 0)):
     """
     将视频分为grid_shape，求每个网格中的车辆数目，播放视频
     """
@@ -447,7 +499,84 @@ def grid_car(result, source='media/iiilab_video.mp4', grid_shape=[5, 5], color=(
         cv2.waitKey(int(300 / fps))
     cv2.destroyAllWindows()
 
-    # return car_number  # 叠加后返回网格车辆数
+
+findindex = lambda self, i, value: sorted(self, key=lambda x: x[i] != value)[0]
+
+
+def predict(result, source='media/iiilab_video.mp4', grid_shape=[5, 5], color=(0, 255, 0)):
+    """
+    预测密度并且播放视频
+    """
+    list_x = [0]
+    list_y = [0]
+
+    video = cv2.VideoCapture(source)
+    fps = video.get(cv2.CAP_PROP_FPS)
+    ret, frame = video.read()
+
+    h, w, _ = frame.shape
+    rows, cols = grid_shape
+    dy, dx = h / rows, w / cols
+
+    for x in np.linspace(start=dx, stop=w - dx, num=cols - 1):
+        x = int(round(x))
+        cv2.line(frame, (x, 0), (x, h), color=color, thickness=2)
+        list_x.append(x)
+    list_x.append(w)
+    # 网格参数
+    for y in np.linspace(start=dy, stop=h - dy, num=rows - 1):
+        y = int(round(y))
+        cv2.line(frame, (0, y), (w, y), color=color, thickness=2)
+        list_y.append(y)
+    list_y.append(h)
+
+    nums = 0
+
+    while True:  # 视频播放
+
+        ret, frame = video.read()
+        if not ret:
+            break
+
+        # 画网格
+        for x in list_x:
+            cv2.line(frame, (x, 0), (x, h), color=color, thickness=3)
+        for y in list_y:
+            cv2.line(frame, (0, y), (w, y), color=color, thickness=3)
+
+        if nums >= 10:
+
+            # car_number = density(result[nums], grid_shape=grid_shape, frame_shape=frame.shape)  # 当前车辆密度
+            new_centers = result[nums][:]
+            car_speeds = speed(result[nums - 10:nums + 1])  # 所有id的车辆速度
+
+            for id_car, output in enumerate(result[nums]):
+                id = int(output[4])
+                bbox = output[0:4]
+                cls = int(output[5])
+                center_x = (bbox[0] + bbox[2]) / 2
+                center_y = (bbox[1] + bbox[3]) / 2
+                car_speed = findindex(car_speeds, 0, id)  # 车速car_speed=[id, type, x, y]
+                # car_index = car_speeds.index(car_speed)
+                new_centers[id_car] = [center_x + car_speed[2], center_y + car_speed[3], cls]
+
+            new_car_number = density(result[nums], new_centers, grid_shape=grid_shape, frame_shape=frame.shape)
+
+            #  画当前数字
+            for i in range(0, len(list_x) - 1):
+                for j in range(1, len(list_y)):
+                    cv2.putText(frame, str(new_car_number[j - 1][i]), (list_x[i], list_y[j]), cv2.FONT_HERSHEY_COMPLEX,
+                                1.0, (100, 200, 200), 2)
+                    if len(result[nums]) > 3:  # 总数大于三辆
+                        if new_car_number[j - 1][i] >= 2:
+                            cv2.rectangle(frame, (int(list_x[i]), int(list_y[j])), (int(list_x[i] + dx), int(list_y[j] -
+                                                                                                             dy)),
+                                          (0, 0, 255), 3)
+
+        nums = nums + 1
+        cv2.imshow(source, frame)  # 显示
+        cv2.waitKey(int(300 / fps))
+    cv2.destroyAllWindows()
 
 
 #

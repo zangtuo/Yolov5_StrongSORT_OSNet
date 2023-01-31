@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="1704a09c-7d44-4967-a3da-5fff5efb3b09" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/Yolov5_StrongSORT_OSNet_fork.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Yolov5_StrongSORT_OSNet_fork.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+=======
+    <list default="true" id="1704a09c-7d44-4967-a3da-5fff5efb3b09" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.idea/Yolov5_StrongSORT_OSNet_fork.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Yolov5_StrongSORT_OSNet_fork.iml" afterDir="false" />
+>>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sahi_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/sahi_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yolo_tracker.py" beforeDir="false" afterPath="$PROJECT_DIR$/yolo_tracker.py" afterDir="false" />
@@ -35,6 +40,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< Updated upstream
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
@@ -48,15 +54,63 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.Color Scheme Font&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/Administrator/AppData/Roaming/JetBrains/PyCharm2022.1/scratches",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件": [
+      "Python"
+    ]
+>>>>>>> Stashed changes
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+<<<<<<< Updated upstream
+=======
+      <recent name="C:\Users\Administrator\AppData\Roaming\JetBrains\PyCharm2022.1\scratches" />
+      <recent name="D:\Github\Yolov5_StrongSORT_OSNet\media" />
+      <recent name="D:\Github\Yolov5_StrongSORT_OSNet" />
+>>>>>>> Stashed changes
       <recent name="D:\git\Yolov5_StrongSORT_OSNet_fork" />
       <recent name="D:\git\Yolov5_StrongSORT_OSNet_fork\media" />
     </key>
   </component>
+<<<<<<< Updated upstream
   <component name="RunManager" selected="Python.track">
+=======
+  <component name="RunManager" selected="Python.scratch">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="Yolov5_StrongSORT_OSNet_fork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+>>>>>>> Stashed changes
     <configuration name="data_assimilation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Yolov5_StrongSORT_OSNet_fork" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -199,8 +253,13 @@
     </list>
     <recent_temporary>
       <list>
+<<<<<<< Updated upstream
         <item itemvalue="Python.yolo_tracker" />
         <item itemvalue="Python.sahi_test" />
+=======
+        <item itemvalue="Python.scratch" />
+        <item itemvalue="Python.track_func" />
+>>>>>>> Stashed changes
         <item itemvalue="Python.data_assimilation" />
         <item itemvalue="Python.web_server" />
       </list>
@@ -217,6 +276,7 @@
       <workItem from="1672995716067" duration="304000" />
       <workItem from="1672996026907" duration="526000" />
       <workItem from="1672996560888" duration="13666000" />
+<<<<<<< Updated upstream
       <workItem from="1673711007785" duration="976000" />
       <workItem from="1673785878383" duration="2032000" />
       <workItem from="1673787948604" duration="898000" />
@@ -224,6 +284,15 @@
       <workItem from="1674040869126" duration="2547000" />
       <workItem from="1674047384896" duration="1449000" />
       <workItem from="1674958102255" duration="7010000" />
+=======
+      <workItem from="1673270025306" duration="64167000" />
+      <workItem from="1674261063870" duration="2646000" />
+      <workItem from="1674634086382" duration="64000" />
+      <workItem from="1674634158859" duration="144000" />
+      <workItem from="1674634311681" duration="927000" />
+      <workItem from="1674984842782" duration="256000" />
+      <workItem from="1674985108780" duration="25546000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
@@ -253,6 +322,19 @@
           <line>170</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
+<<<<<<< Updated upstream
+=======
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/track_func.py</url>
+          <line>481</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/track_func.py</url>
+          <line>479</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+>>>>>>> Stashed changes
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -262,7 +344,14 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+<<<<<<< Updated upstream
     <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$track.coverage" NAME="track Coverage Results" MODIFIED="1674960092847" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+=======
+    <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet$scratch.coverage" NAME="scratch 覆盖结果" MODIFIED="1675056908470" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet$track.coverage" NAME="track 覆盖结果" MODIFIED="1673423800181" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$track.coverage" NAME="track Coverage Results" MODIFIED="1673010807628" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$web_server.coverage" NAME="web_server Coverage Results" MODIFIED="1673060814390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+>>>>>>> Stashed changes
     <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$data_assimilation.coverage" NAME="data_assimilation Coverage Results" MODIFIED="1673072731729" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$web_server.coverage" NAME="web_server Coverage Results" MODIFIED="1673060814390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Yolov5_StrongSORT_OSNet_fork$track_rtmp.coverage" NAME="track_rtmp Coverage Results" MODIFIED="1673010791607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
