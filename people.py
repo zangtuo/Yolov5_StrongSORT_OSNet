@@ -45,7 +45,7 @@ track_method = 'ocsort'
 
 class Hir_Yolo:
     """
-    HirYOLO使用
+    HirYOLO：YOLOV5检测人和物，ocsort跟踪， coco训练
     """
     def __init__(self, yolo_weights, track_method=track_method, device='0', slice_enabled=False):
         self.yolo_weights = Path(yolo_weights)
