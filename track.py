@@ -342,3 +342,4 @@ def main(opt):
 if __name__ == "__main__":
     opt = parse_opt()
     main(opt)
+# python track.py --yolo-weights yolov5n.pt --source media/xingren.mp4 --show-vid
