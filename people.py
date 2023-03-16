@@ -62,7 +62,7 @@ class Hir_Yolo:
     def coco_all(self, source, frames):
         # TODO：轨迹
         stride, names, pt = self.model.stride, self.model.names, self.model.pt
-        dataset = LoadStreams(source, img_size=self.imgsz, stride=stride, auto=pt, vid_stride=1)
+        dataset = LoadStreams(source, img_size=self.imgsz, stride=stride, auto=pt, vid_stride=1)  # 数据加载
 
         tracker = create_tracker(track_method, self.track_config, self.reid_weights, self.device, False)
 
@@ -90,7 +90,7 @@ class Hir_Yolo:
                     # TODO: SAHI
                     pred = []
                 else:
-                    pred = self.detection_model(im, augment=False, visualize=False)
+                    pred = self.model(im, augment=False, visualize=False)
 
             # Apply NMS
             with dt[2]:
@@ -209,7 +209,7 @@ class Hir_Yolo:
                     f"{s}{'' if len(det) else '(no detections), '}{sum([dt.dt for dt in dt if hasattr(dt, 'dt')]) * 1E3:.1f}ms")
 
             track_result.extend(outputs)
-        return track_result
+        return w, h, n_frame, track_result
 
     def intenface_data(self, source, thing: list) -> list:
         # TODO：返回指定物和人的坐标
