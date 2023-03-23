@@ -41,12 +41,94 @@ from utils.segment.general import masks2segments, process_mask, process_mask_nat
 from trackers.multi_tracker_zoo import create_tracker
 
 track_method = 'ocsort'
-
+coco_classes = {
+    1: "person",
+    2: "bicycle",
+    3: "car",
+    4: "motorcycle",
+    5: "airplane",
+    6: "bus",
+    7: "train",
+    8: "truck",
+    9: "boat",
+    10: "traffic light",
+    11: "fire hydrant",
+    13: "stop sign",
+    14: "parking meter",
+    15: "bench",
+    16: "bird",
+    17: "cat",
+    18: "dog",
+    19: "horse",
+    20: "sheep",
+    21: "cow",
+    22: "elephant",
+    23: "bear",
+    24: "zebra",
+    25: "giraffe",
+    27: "backpack",
+    28: "umbrella",
+    31: "handbag",
+    32: "tie",
+    33: "suitcase",
+    34: "frisbee",
+    35: "skis",
+    36: "snowboard",
+    37: "sports ball",
+    38: "kite",
+    39: "baseball bat",
+    40: "baseball glove",
+    41: "skateboard",
+    42: "surfboard",
+    43: "tennis racket",
+    44: "bottle",
+    46: "wine glass",
+    47: "cup",
+    48: "fork",
+    49: "knife",
+    50: "spoon",
+    51: "bowl",
+    52: "banana",
+    53: "apple",
+    54: "sandwich",
+    55: "orange",
+    56: "broccoli",
+    57: "carrot",
+    58: "hot dog",
+    59: "pizza",
+    60: "donut",
+    61: "cake",
+    62: "chair",
+    63: "couch",
+    64: "potted plant",
+    65: "bed",
+    67: "dining table",
+    70: "toilet",
+    72: "tv",
+    73: "laptop",
+    74: "mouse",
+    75: "remote",
+    76: "keyboard",
+    77: "cell phone",
+    78: "microwave",
+    79: "oven",
+    80: "toaster",
+    81: "sink",
+    82: "refrigerator",
+    84: "book",
+    85: "clock",
+    86: "vase",
+    87: "scissors",
+    88: "teddy bear",
+    89: "hair drier",
+    90: "toothbrush"
+}
 
 class Hir_Yolo:
     """
     HirYOLO：YOLOV5检测人和物，ocsort跟踪， coco训练
     """
+
     def __init__(self, yolo_weights, track_method=track_method, device='0', slice_enabled=False):
         self.yolo_weights = Path(yolo_weights)
         self.device = select_device(device)
@@ -59,8 +141,8 @@ class Hir_Yolo:
         self.reid_weights = WEIGHTS / 'osnet_x0_25_msmt17.pt',  # model.pt path,
         self.slice_enabled = slice_enabled
 
-    def coco_all(self, source, frames):
-        # TODO：轨迹
+    def coco_all(self, source, frames=0):
+        # TODO：轨迹绘制
         stride, names, pt = self.model.stride, self.model.names, self.model.pt
         dataset = LoadStreams(source, img_size=self.imgsz, stride=stride, auto=pt, vid_stride=1)  # 数据加载
 
@@ -114,12 +196,13 @@ class Hir_Yolo:
                 # pass detections to strongsort
                 with dt[3]:
                     outputs[i] = tracker.update(det.cpu(), im)
-
-            if frame_idx > frames:
-                return track_result
+            track_result.append(outputs)
+            # if frame_idx > frames:
+            #     return track_result
+        return track_result
 
     @torch.no_grad()
-    def interface_people(self, source):
+    def interface_people_show(self, source):
         """
         扫描框展示
         """
@@ -207,13 +290,12 @@ class Hir_Yolo:
                     exit()
                 LOGGER.info(
                     f"{s}{'' if len(det) else '(no detections), '}{sum([dt.dt for dt in dt if hasattr(dt, 'dt')]) * 1E3:.1f}ms")
-
-            track_result.extend(outputs)
+            outputs_list = outputs[0].tolist()
+            track_result.append(list(outputs_list))
         return w, h, n_frame, track_result
 
     def intenface_data(self, source, thing: list) -> list:
-        # TODO：返回指定物和人的坐标
-        # TODO：轨迹
+        # 返回指定人和物的坐标
         stride, names, pt = self.model.stride, self.model.names, self.model.pt
         dataset = LoadStreams(source, img_size=self.imgsz, stride=stride, auto=pt, vid_stride=1)
 
@@ -282,6 +364,8 @@ if __name__ == '__main__':
     model_name = 'yolov5x'
 
     tracker = Hir_Yolo(yolo_weights=os.path.join(model_dir, model_name) + '.pt')
-    w, h, n_frame, outputs = tracker.interface_people(source='media\\video.avi')
+    w, h, n_frame, outputs = tracker.interface_people_show(source='media_hir')
+    # w, h, n_frame, outputs_2 = tracker.interface_people_show(source='media_hir\\xingren.mp4')
+    # outputs = tracker.coco_all(source='media_hir\\video.avi')
     # tracker.
     outputs
